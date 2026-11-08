@@ -4,27 +4,24 @@ Brief Data Analyst d'une journée (7 h), individuel et guidé : l'apprenant appr
 
 ## Fiche Simplonline
 
-**Titre** (79/100 car.) : Automatiser sa recherche d'emploi Data Analyst avec Make et l'API France Travail
+**Titre** : Automatiser sa recherche d'emploi Data Analyst avec Make et l'API France Travail
 
-**Description rapide** (~560/900 car.) : Chercher un stage, une alternance ou un emploi prend du temps : mêmes recherches, mêmes sites, chaque semaine. Dans ce brief, vous construisez avec Make un scénario no-code qui interroge l'API de France Travail, récupère les nouvelles offres de data analyst, les range dans un Google Sheet de suivi de candidatures et vous prévient sur Discord. Vous commencez par vous former à Make avec deux tutos guidés, puis vous réalisez le projet en suivant des étapes et des captures d'écran, en particulier pour les appels HTTP.
+**Description rapide** : Chercher un stage, une alternance ou un emploi prend du temps : mêmes recherches, mêmes sites, chaque semaine. Dans ce brief, vous construisez avec Make un scénario no-code qui interroge l'API de France Travail, récupère les nouvelles offres de data analyst, les range dans un Google Sheet de suivi de candidatures et vous prévient sur Discord. Vous commencez par vous former à Make avec deux tutos guidés, puis vous réalisez le projet en suivant des étapes et des captures d'écran, en particulier pour les appels HTTP.
 
-**Compétences visées** (à caler sur les libellés exacts du référentiel, voir note) :
+**Compétences visées** :
 
-- **C6 — Collecter des données depuis différentes sources** — Ce qu'elle couvre ici : Appel d'une API authentifiée (jeton OAuth2) avec le module HTTP de Make — Niveau : 2 — Adapter
+- **C6 — Collecter des données depuis différentes sources** — Ce qu'elle couvre ici : Appel d'une API authentifiée (avec un jeton d'accès) avec le module HTTP de Make — Niveau : 2 — Adapter
 - **C7 — Nettoyer et préparer les données** — Ce qu'elle couvre ici : Mise en forme des dates, valeurs manquantes, traduction des booléens, construction des liens — Niveau : 2 — Adapter
 - **C8 — Stocker les données dans une structure adaptée** — Ce qu'elle couvre ici : Google Sheet de suivi structuré, alimenté automatiquement — Niveau : 2 — Adapter
 
 Niveau 2 partout : les tutos 1 et 2 donnent un exemple complet (veille RSS) que l'apprenant adapte à une nouvelle source, une API, sans corrigé pendant le projet.
 
-Note : le fichier de référence des compétences C1–C19 n'était pas disponible ; les numéros et libellés ci-dessus suivent le découpage du Bloc 2 (C6–C9) et sont à vérifier avant publication.
+**Organisation :** individuel · 1 journée (7 h) de réalisation, puis une séance de restitution à part pour les démos · prérequis : aucun en programmation.
 
-**Organisation :** individuel · 1 journée (7 h) · prérequis : aucun en programmation.
-
-**À faire avant la journée (30 min) :** créer les quatre comptes gratuits du projet, chacun avec une validation par e-mail : **make.com** (« Get started free », inscription possible avec votre compte Google, région EU), **francetravail.io**, **Discord** et **github.com**. Ainsi, la journée est consacrée au projet et non aux inscriptions.
+**À faire avant la journée (30 min) :** créer les quatre comptes gratuits du projet, chacun avec une validation par e-mail : **make.com** (« Get started free », inscription possible avec votre compte Google, région EU), **francetravail.io**, **Discord** et **github.com** (GitHub peut demander d'activer la double authentification avec une application sur votre téléphone : prévoyez-le). Ainsi, la journée est consacrée au projet et non aux inscriptions.
 
 ## Contexte
 
-(~1 500/6 000 car.)
 
 Vous débutez votre formation de Data Analyst. Dans quelques mois, il faudra décrocher un stage pour la fin de la formation, ou une alternance. Autant s'y prendre dès maintenant : les entreprises recrutent souvent plusieurs mois à l'avance.
 
@@ -42,7 +39,7 @@ Votre objectif : un outil qui, chaque lundi matin, sans aucune action de votre p
 
 Contraintes : pas de budget (offre gratuite de Make), aucun mot de passe ni clé secrète visible dans vos livrables, et un outil qu'une personne qui ne l'a pas construit peut comprendre en lisant votre document de présentation.
 
-À la fin de la journée, vous présenterez votre automatisation en 5 minutes, avec un vrai tableau rempli d'offres réelles.
+Lors de la séance de restitution, vous présenterez votre automatisation en 5 minutes, avec un vrai tableau rempli d'offres réelles.
 
 ## Phase 0 — Apprendre Make avec les tutos 1 et 2 (2 h)
 
@@ -68,7 +65,6 @@ Avant le projet, vous apprenez Make en construisant une **veille data automatiqu
 
 ## Modalités pédagogiques
 
-(~4 800/6 000 car.)
 
 Travail **individuel**, sur une journée : la phase 0 le matin (2 h), puis le projet en 8 étapes. Chaque étape se termine par un point de contrôle : ne passez pas à la suivante tant qu'il n'est pas atteint. Bloqué plus de 10 minutes ? Demandez de l'aide à un voisin. Sauvegardez votre scénario souvent (`Ctrl+S` / `Cmd+S`).
 
@@ -103,16 +99,21 @@ Question guidante : un webhook est une « adresse postale » du salon. Pourquoi 
 
 Créez un Google Sheet `Suivi candidatures Data`. Il doit contenir au minimum : la date de publication, l'intitulé, l'entreprise, le lieu, le type de contrat, l'information alternance oui/non, le lien vers l'offre et son identifiant (rempli par Make), puis un statut, une date de candidature et des notes (remplis par vous).
 
+- Placez les colonnes remplies par Make à gauche et vos trois colonnes de suivi **à droite**.
+- Dès maintenant, sélectionnez la colonne de la date puis **Format > Nombre > Texte brut** : vos dates JJ/MM/AAAA s'afficheront telles quelles, sans inversion jour/mois.
+
 Questions guidantes : pourquoi garder l'identifiant de l'offre alors qu'il n'est pas lisible ? Quelles colonnes Make doit-il remplir, et lesquelles sont pour vous ?
 
 **Étape 4 — Modules HTTP 1 et 2** → suivez le **Zoom sur les modules HTTP** ci-dessous, pas à pas.
 
 **Étape 5 — Iterator + Google Sheets**
 
+> ⚠️ Ne commencez cette étape que si le module 2 renvoie des offres. S'il renvoie 204 ou une liste `resultats` vide, élargissez d'abord vos critères (mots-clés, départements, `publieeDepuis`) : sans offre, l'Iterator n'a aucun champ à vous proposer.
+
 Comme dans le tuto 2 : un **Iterator** sur la liste des offres, puis **Google Sheets > Add a Row**.
 
 1. **Iterator** : cliquez dans le champ **Array**. Dans le panneau des pastilles, ouvrez **HTTP (module 2) > Data** et cliquez sur **`resultats`** (pastille `2.data.resultats`). Si le panneau est vide, relancez d'abord un **Run once** : Make ne connaît les champs qu'après une première exécution.
-2. **Add a Row** : choisissez votre Sheet et sa feuille. Les champs d'une offre apparaissent alors sous le module Iterator (numéro 3) : `dateCreation`, `intitule`, `entreprise: nom`, `lieuTravail: libelle`, `typeContratLibelle`, `alternance` et `id`.
+2. **Add a Row** : choisissez votre Sheet et sa feuille. Les champs d'une offre apparaissent alors sous le module **Iterator** : `dateCreation`, `intitule`, `entreprise: nom`, `lieuTravail: libelle`, `typeContratLibelle`, `alternance` et `id`. **Laissez vides** dans Make les champs statut, date de candidature et notes : c'est vous qui les remplirez.
 
 Indices pour le nettoyage (remplacez « pastille » par la pastille du champ, en cliquant dessus) :
 
@@ -121,28 +122,28 @@ Indices pour le nettoyage (remplacez « pastille » par la pastille du champ, en
 - Vrai/faux transformé en Oui/Non : `if(pastille; "Oui"; "Non")`
 - Lien de l'offre : tapez `https://candidat.francetravail.fr/offres/recherche/detail/`, puis cliquez la pastille `id` juste après, sans espace.
 
-Les fonctions se trouvent aussi dans les onglets du panneau des pastilles (icône calendrier pour les dates, icône engrenage pour `if` et `ifempty`). Les séparateurs sont des **points-virgules**. Si les dates s'affichent inversées dans le Sheet, sélectionnez la colonne puis **Format > Nombre > Texte brut**.
+Les fonctions se trouvent aussi dans les onglets du panneau des pastilles (icône calendrier pour les dates, icône engrenage pour `if` et `ifempty`). Les séparateurs sont des **points-virgules**.
 
 Questions guidantes : pourquoi certaines offres n'ont-elles pas de nom d'entreprise ? Que se passerait-il dans votre Sheet sans `ifempty` ?
 
-**Étape 6 — Alerte Discord** → voir le Zoom HTTP, partie « Module 5 ».
+**Étape 6 — Alerte Discord** → voir le Zoom HTTP, partie « Dernier module ». En général, utilisez les pastilles du panneau plutôt que de taper des numéros de modules : les numéros changent si vous supprimez un module.
 
 **Étape 7 — Tester, planifier, compter**
 
 1. Lancez **Run once** et vérifiez le Sheet et le salon Discord.
 2. Supprimez les lignes de test du Sheet (gardez la ligne d'en-têtes).
-3. Planifiez le scénario **chaque lundi à 8 h** (horloge sous le premier module), puis cliquez sur **Save** et activez le scénario avec l'interrupteur **ON** en bas de l'écran.
+3. Planifiez et activez le scénario, comme à l'étape 7 du tuto 2 : en haut à droite, cliquez sur le réglage de planification (« Every 15 minutes » par défaut), choisissez **Weekly**, **Monday**, **08:00**, puis **Save**. Cliquez enfin sur **Save and activate** : le scénario doit apparaître comme **actif**.
 4. Relevez le nombre de crédits consommés par une exécution (historique du scénario) et estimez la consommation sur un mois.
 
 Questions guidantes : pourquoi une exécution par semaine avec « offres des 7 derniers jours » évite-t-elle les doublons ? Combien d'offres par exécution pouvez-vous vous permettre avec 1 000 crédits par mois ?
 
-> ⚠️ Le **Run once** de la démo ajoutera de nouveau les offres de la semaine : prévoyez des doublons dans le Sheet, ou videz-le juste avant la démo.
+> ⚠️ Le **Run once** de la démo ajoutera de nouveau les offres de la semaine. **Videz les lignes du Sheet (sauf les en-têtes) juste avant la démo**, pour éviter les doublons.
 
 **Étape 8 — Documenter et préparer la démo**
 
-1. **Document de présentation** : rédigez-le dans Word (ou un fichier .txt), en suivant la liste de la partie *Livrables attendus*.
+1. **Document de présentation** : rédigez-le dans Word, ou dans Google Docs puis **Fichier > Télécharger > Microsoft Word (.docx)**, ou encore dans un simple fichier .txt, en suivant la liste de la partie *Livrables attendus*.
 2. **Lien du Sheet en lecture seule** : dans Google Sheets, **Partager** > Accès général : **Tous les utilisateurs disposant du lien** > rôle **Lecteur** > **Copier le lien**, puis collez-le dans le document.
-3. **Blueprint** : dans le scénario, menu **« … »** en haut à droite > **Export Blueprint**. Ouvrez le fichier .json avec un éditeur de texte (Bloc-notes sous Windows : clic droit > Ouvrir avec ; TextEdit sur Mac). Avec **Rechercher / Remplacer** (`Ctrl+H` sous Windows, `Cmd+Option+F` sur Mac), remplacez votre clé secrète, votre identifiant client et l'URL du webhook par `***`, puis enregistrez. Vérifiez avec **Rechercher** (`Ctrl+F` / `Cmd+F`) que `PAR_` et `discord.com/api/webhooks` ne donnent plus aucun résultat.
+3. **Blueprint** : dans le scénario, menu **« … »** en haut à droite > **Export Blueprint**. Ouvrez le fichier .json avec un éditeur de texte (Bloc-notes sous Windows : clic droit > Ouvrir avec ; TextEdit sur Mac). Avec **Rechercher / Remplacer** (`Ctrl+H` sous Windows, `Cmd+Option+F` sur Mac), remplacez votre clé secrète, votre identifiant client et l'URL du webhook par `***`, puis enregistrez. Vérifiez avec **Rechercher** (`Ctrl+F` / `Cmd+F`) que `PAR_`, `discord.com/api/webhooks` et les **6 premiers caractères de votre clé secrète** ne donnent plus aucun résultat.
 4. **Captures** : prenez-les avec l'outil Capture d'écran (Windows : `Win+Maj+S` ; Mac : `Cmd+Maj+4`). Masquez chaque secret ou donnée personnelle par un rectangle plein (Paint, Aperçu…) ou recadrez l'image pour l'exclure.
 5. **Dépôt GitHub** : sur github.com, cliquez sur **« + »** en haut à droite > **New repository**, nommez-le `recherche-emploi-make-<prénom>`, choisissez **Public**, cochez **Add a README file**, puis **Create repository**. Cliquez ensuite sur **Add file > Upload files**, glissez votre document, le blueprint et les captures (pas de fichier .zip), puis **Commit changes**. Vérifiez une dernière fois qu'aucun secret n'apparaît.
 6. Préparez une démo de 5 minutes.
@@ -205,7 +206,7 @@ Dans **Body content**, cliquez quatre fois sur **« + Add a field »** :
 - **Headers** : Name `Authorization`, Value `Bearer {{1.data.access_token}}`
 - **Parse response** : `Yes`
 
-`{{1.data.access_token}}` signifie « le jeton renvoyé par le module 1 » : tapez-le tel quel, Make le transforme en pastille. Attention à l'espace après `Bearer`.
+`{{1.data.access_token}}` signifie « le jeton renvoyé par le module 1 » : tapez-le tel quel, Make le transforme en pastille. Attention à l'espace après `Bearer`. Si votre premier module HTTP ne porte pas le numéro 1 (cela arrive quand on a supprimé un module), tapez `Bearer ` puis cliquez plutôt la pastille **`access_token`** sous ce module dans le panneau des pastilles.
 
 ![URL de recherche des offres](https://raw.githubusercontent.com/gsoulat/brief-recherche-emploi-make/main/images/06-url-recherche-offres.png)
 
@@ -237,7 +238,7 @@ Ouvrez la bulle du module 2 : un **Status Code 206** (ou 200) signifie que tout 
 - **401 sur le module 2** : Header mal rédigé : il faut `Bearer`, un espace, puis la pastille du jeton
 - **204 ou `resultats` vide** : Aucune offre pour vos critères : élargissez les mots-clés, les départements ou `publieeDepuis`
 
-### Module 5 — L'alerte Discord
+### Dernier module — L'alerte Discord
 
 Après le module Google Sheets, ajoutez un troisième **HTTP > Make a request** :
 
@@ -247,7 +248,7 @@ Après le module Google Sheets, ajoutez un troisième **HTTP > Make a request** 
 - **Body content type** : `multipart/form-data`
 - **Field 1** : Name `content`, Field type `Text`, Value = votre message
 
-> ⚠️ Si Discord renvoie une erreur **429** (trop de messages d'un coup), réduisez temporairement `range` à `0-4` dans le module 2 pour vos tests.
+> ⚠️ Envoyer 15 messages d'affilée peut déclencher une erreur **429** (trop de messages d'un coup). Pour l'éviter, ajoutez entre Google Sheets et Discord un module **Tools > Sleep** réglé sur **1** seconde. Il consomme un crédit par offre : comptez-le dans votre estimation.
 
 À vous de composer le message avec les pastilles de l'offre (intitulé, entreprise, lieu, contrat, lien). Astuce : dans Discord, un texte entouré de `**` s'affiche en gras.
 
@@ -255,26 +256,23 @@ Après le module Google Sheets, ajoutez un troisième **HTTP > Make a request** 
 
 ## Livrables attendus
 
-(~1 200/3 000 car.)
 
 Un **dépôt GitHub public** nommé `recherche-emploi-make-<prénom>`, dans lequel les fichiers sont déposés directement (pas de fichier .zip). Il contient :
 
-- un **document Word (.docx) ou texte (.txt)** qui présente le projet : objectif, outils utilisés (Make, API France Travail, Google Sheets, Discord), rôle de chaque module du scénario, critères de recherche choisis (mots-clés, département(s)), estimation des crédits Make consommés par mois, difficultés rencontrées et solutions trouvées, lien du Google Sheet en lecture seule ;
+- un **document Word (.docx, possible depuis Google Docs) ou texte (.txt)** qui présente le projet : objectif, outils utilisés (Make, API France Travail, Google Sheets, Discord), rôle de chaque module du scénario, critères de recherche choisis (mots-clés, département(s)), estimation des crédits Make consommés par mois, difficultés rencontrées et solutions trouvées, lien du Google Sheet en lecture seule ;
 - le **blueprint JSON** du scénario (menu « … » en haut à droite du scénario > Export Blueprint). Attention : ce fichier contient vos valeurs en clair. Ouvrez-le avec un éditeur de texte et remplacez l'identifiant client, la clé secrète et l'URL du webhook par `***` avant de le déposer ;
-- les **captures d'écran** : le scénario complet, le Sheet rempli, le salon Discord avec les alertes et la planification, toutes **floutées** (clés, webhook, données personnelles).
+- les **captures d'écran** : le scénario complet, le Sheet rempli, le salon Discord avec les alertes et la planification, toutes **masquées** (clés, webhook, données personnelles).
 
 ## Modalités d'évaluation
 
-(~700/3 000 car.)
 
-- **Démo individuelle de 5 minutes** en fin de journée : lancement du scénario en direct (Run once), puis visite du Sheet et du salon Discord.
+- **Démo individuelle de 5 minutes**, lors d'une séance de restitution dédiée (en dehors des 7 h de réalisation) : lancement du scénario en direct (Run once), puis visite du Sheet et du salon Discord.
 - **3 minutes de questions** : rôle de chaque module, ce qu'est un jeton d'accès, ce qui se passerait sans `ifempty`, comment ajouter un département.
 
 Une compétence est validée quand **100 % de ses critères** sont atteints.
 
 ## Critères de performance
 
-(~1 300/3 000 car.)
 
 **C6 — Collecter**
 
@@ -293,7 +291,7 @@ Une compétence est validée quand **100 % de ses critères** sont atteints.
 **C8 — Stocker**
 
 - Le Sheet a une ligne d'en-têtes et une ligne par offre, sans décalage de colonnes.
-- Les colonnes de suivi (statut, date de candidature, notes) sont présentes et séparées des colonnes remplies par Make.
+- Les colonnes de suivi (statut, date de candidature, notes) sont présentes, placées à droite des colonnes remplies par Make, et laissées vides par le scénario.
 
 **Transverse**
 
