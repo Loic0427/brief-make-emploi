@@ -26,7 +26,7 @@ Note : le fichier de référence des compétences C1–C19 n'était pas disponib
 
 (~1 500/6 000 car.)
 
-Vous approchez de la fin de votre formation de Data Analyst. Prochaine étape : décrocher un stage, une alternance ou un premier emploi.
+Vous débutez votre formation de Data Analyst. Dans quelques mois, il faudra décrocher un stage pour la fin de la formation, ou une alternance. Autant s'y prendre dès maintenant : les entreprises recrutent souvent plusieurs mois à l'avance.
 
 Chaque semaine, c'est le même rituel : ouvrir les sites d'offres, taper « data analyst », repérer les nouveautés, noter quelque part celles qui vous intéressent… et oublier à qui vous avez déjà écrit. Vous perdez du temps sur la recherche au lieu de soigner vos candidatures.
 
