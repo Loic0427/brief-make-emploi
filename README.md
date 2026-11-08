@@ -20,6 +20,8 @@ Note : le fichier de référence des compétences C1–C19 n'était pas disponib
 
 **Organisation :** individuel · 1 journée (7 h) · prérequis : aucun en programmation.
 
+**À faire avant la journée (30 min) :** créer les quatre comptes gratuits du projet, chacun avec une validation par e-mail : **make.com** (« Get started free », inscription possible avec votre compte Google, région EU), **francetravail.io**, **Discord** et **github.com**. Ainsi, la journée est consacrée au projet et non aux inscriptions.
+
 ## Contexte
 
 (~1 500/6 000 car.)
@@ -30,9 +32,9 @@ Chaque semaine, c'est le même rituel : ouvrir les sites d'offres, taper « data
 
 Le défi : **appliquer votre métier à votre propre recherche d'emploi**. Un data analyst sait aller chercher des données, les nettoyer et les ranger pour en tirer des décisions. Les offres d'emploi sont des données comme les autres.
 
-Bonne nouvelle : France Travail met ses offres d'emploi à disposition gratuitement, grâce à une **API** accessible depuis le site francetravail.io. Et votre promo utilise déjà **Make**, un outil d'automatisation no-code, ainsi que **Google Sheets** et **Discord**.
+Bonne nouvelle : France Travail met ses offres d'emploi à disposition gratuitement, grâce à une **API** accessible depuis le site francetravail.io. Pour construire votre outil, vous allez découvrir **Make**, un outil d'automatisation no-code, ainsi que **Google Sheets** et **Discord**.
 
-Léa attend de vous un outil qui, chaque lundi matin, sans aucune action de votre part :
+Votre objectif : un outil qui, chaque lundi matin, sans aucune action de votre part :
 
 - récupère les offres « data analyst » publiées depuis une semaine ;
 - les range dans un tableau de suivi de candidatures, avec des colonnes que vous compléterez vous-même (statut, date de candidature, notes) ;
@@ -52,6 +54,17 @@ Avant le projet, vous apprenez Make en construisant une **veille data automatiqu
 **Point de contrôle :** votre scénario « Veille Data RSS » remplit le Google Sheet et il est planifié. Vous savez expliquer avec vos mots ce que sont un **module**, un **bundle**, un **Iterator** et un **mapping**.
 
 > 💡 L'offre gratuite de Make autorise 2 scénarios actifs. Votre veille RSS peut rester active : le scénario du projet sera le deuxième.
+
+> 💡 Le tuto 2 parle d'« opérations » : c'est la même chose que les « crédits » de ce brief (1 module exécuté = 1 crédit). Si un chiffre d'une capture (nombre d'articles, de bulles, de lignes) diffère du vôtre, c'est normal : il dépend des articles publiés le jour où vous faites le tuto.
+
+**Petit glossaire**
+
+- **API** : un service qui permet à un programme (ici Make) de demander des données à un site, sans passer par ses pages web.
+- **JSON** : le format texte dans lequel une API répond, fait de paires « nom : valeur ». Make le découpe pour vous en pastilles.
+- **Jeton (token)** : un ticket d'accès temporaire, obtenu avec votre identifiant et votre clé secrète.
+- **Bearer** : le mot à écrire devant le jeton pour le présenter à l'API (« porteur du ticket »).
+- **Webhook** : une adresse secrète qui permet de poster un message dans un salon Discord.
+- **Blueprint** : l'export de votre scénario Make dans un fichier .json, qui permet de le sauvegarder ou de le partager.
 
 ## Modalités pédagogiques
 
@@ -73,15 +86,16 @@ Travail **individuel**, sur une journée : la phase 0 le matin (2 h), puis le pr
 
 1. Créez un compte sur **francetravail.io** (bouton « Mon espace », puis création de compte et validation par e-mail).
 2. Dans Mon espace, cliquez sur **« Créer une application »** et décrivez votre projet (nom, description, URL : `https://www.make.com`).
-3. Copiez immédiatement l'**identifiant client** et la **clé secrète** dans un fichier texte privé : la clé ne s'affiche qu'une fois.
+3. Copiez immédiatement l'**identifiant client** (il commence par `PAR_`) et la **clé secrète** dans un fichier texte privé, rangé hors de votre futur dépôt GitHub.
 4. Cliquez sur **« Ajouter ma première API »**, ajoutez **Offres d'emploi v2**, puis enregistrez.
 
 Questions guidantes : pourquoi France Travail donne-t-il des clés à une « application » plutôt qu'à une personne ? Que risquez-vous si votre clé secrète se retrouve sur GitHub ?
 
 **Étape 2 — Préparer Discord**
 
-1. Créez un serveur privé à votre nom, puis un salon textuel `offres-data`.
-2. Dans les paramètres du salon, onglet **Intégrations**, créez un **webhook** et copiez son URL dans votre fichier privé.
+1. Dans Discord, cliquez sur le **« + »** en bas de la liste des serveurs (à gauche), puis **Créer le mien** > **Pour moi et mes amis**, et nommez le serveur.
+2. Créez un salon textuel `offres-data` (« + » à côté de « Salons textuels »).
+3. Survolez le salon, cliquez sur la **roue dentée** (Modifier le salon) > **Intégrations** > **Webhooks** > **Nouveau webhook**, puis **Copier l'URL du webhook** et collez-la dans votre fichier privé.
 
 Question guidante : un webhook est une « adresse postale » du salon. Pourquoi faut-il la garder secrète ?
 
@@ -95,9 +109,19 @@ Questions guidantes : pourquoi garder l'identifiant de l'offre alors qu'il n'est
 
 **Étape 5 — Iterator + Google Sheets**
 
-Comme dans le tuto 2 : un **Iterator** sur la liste des offres, puis **Google Sheets > Add a Row**. Pour le mapping, ouvrez la sortie du module 2 et repérez dans une offre les champs `dateCreation`, `intitule`, `entreprise > nom`, `lieuTravail > libelle`, `typeContratLibelle`, `alternance` et `id`.
+Comme dans le tuto 2 : un **Iterator** sur la liste des offres, puis **Google Sheets > Add a Row**.
 
-Indices : `formatDate` met la date au format français ; `ifempty` remplace une valeur absente ; `if` transforme un vrai/faux en Oui/Non. Le lien d'une offre est `https://candidat.francetravail.fr/offres/recherche/detail/` suivi de son identifiant.
+1. **Iterator** : cliquez dans le champ **Array**. Dans le panneau des pastilles, ouvrez **HTTP (module 2) > Data** et cliquez sur **`resultats`** (pastille `2.data.resultats`). Si le panneau est vide, relancez d'abord un **Run once** : Make ne connaît les champs qu'après une première exécution.
+2. **Add a Row** : choisissez votre Sheet et sa feuille. Les champs d'une offre apparaissent alors sous le module Iterator (numéro 3) : `dateCreation`, `intitule`, `entreprise: nom`, `lieuTravail: libelle`, `typeContratLibelle`, `alternance` et `id`.
+
+Indices pour le nettoyage (remplacez « pastille » par la pastille du champ, en cliquant dessus) :
+
+- Date au format JJ/MM/AAAA : `formatDate(pastille; "DD/MM/YYYY")`
+- Valeur absente remplacée : `ifempty(pastille; "Non communiqué")`
+- Vrai/faux transformé en Oui/Non : `if(pastille; "Oui"; "Non")`
+- Lien de l'offre : tapez `https://candidat.francetravail.fr/offres/recherche/detail/`, puis cliquez la pastille `id` juste après, sans espace.
+
+Les fonctions se trouvent aussi dans les onglets du panneau des pastilles (icône calendrier pour les dates, icône engrenage pour `if` et `ifempty`). Les séparateurs sont des **points-virgules**. Si les dates s'affichent inversées dans le Sheet, sélectionnez la colonne puis **Format > Nombre > Texte brut**.
 
 Questions guidantes : pourquoi certaines offres n'ont-elles pas de nom d'entreprise ? Que se passerait-il dans votre Sheet sans `ifempty` ?
 
@@ -106,20 +130,30 @@ Questions guidantes : pourquoi certaines offres n'ont-elles pas de nom d'entrepr
 **Étape 7 — Tester, planifier, compter**
 
 1. Lancez **Run once** et vérifiez le Sheet et le salon Discord.
-2. Planifiez le scénario **chaque lundi à 8 h**.
-3. Relevez le nombre de crédits consommés par une exécution (historique du scénario) et estimez la consommation sur un mois.
+2. Supprimez les lignes de test du Sheet (gardez la ligne d'en-têtes).
+3. Planifiez le scénario **chaque lundi à 8 h** (horloge sous le premier module), puis cliquez sur **Save** et activez le scénario avec l'interrupteur **ON** en bas de l'écran.
+4. Relevez le nombre de crédits consommés par une exécution (historique du scénario) et estimez la consommation sur un mois.
 
 Questions guidantes : pourquoi une exécution par semaine avec « offres des 7 derniers jours » évite-t-elle les doublons ? Combien d'offres par exécution pouvez-vous vous permettre avec 1 000 crédits par mois ?
 
+> ⚠️ Le **Run once** de la démo ajoutera de nouveau les offres de la semaine : prévoyez des doublons dans le Sheet, ou videz-le juste avant la démo.
+
 **Étape 8 — Documenter et préparer la démo**
 
-Rédigez le document de présentation (Word ou texte), exportez le blueprint en masquant les secrets, ajoutez les captures en **floutant** clé secrète, identifiant client, URL du webhook et données personnelles, puis déposez le tout directement dans votre dépôt GitHub (sans fichier .zip). Préparez enfin une démo de 5 minutes.
+1. **Document de présentation** : rédigez-le dans Word (ou un fichier .txt), en suivant la liste de la partie *Livrables attendus*.
+2. **Lien du Sheet en lecture seule** : dans Google Sheets, **Partager** > Accès général : **Tous les utilisateurs disposant du lien** > rôle **Lecteur** > **Copier le lien**, puis collez-le dans le document.
+3. **Blueprint** : dans le scénario, menu **« … »** en haut à droite > **Export Blueprint**. Ouvrez le fichier .json avec un éditeur de texte (Bloc-notes sous Windows : clic droit > Ouvrir avec ; TextEdit sur Mac). Avec **Rechercher / Remplacer** (`Ctrl+H` sous Windows, `Cmd+Option+F` sur Mac), remplacez votre clé secrète, votre identifiant client et l'URL du webhook par `***`, puis enregistrez. Vérifiez avec **Rechercher** (`Ctrl+F` / `Cmd+F`) que `PAR_` et `discord.com/api/webhooks` ne donnent plus aucun résultat.
+4. **Captures** : prenez-les avec l'outil Capture d'écran (Windows : `Win+Maj+S` ; Mac : `Cmd+Maj+4`). Masquez chaque secret ou donnée personnelle par un rectangle plein (Paint, Aperçu…) ou recadrez l'image pour l'exclure.
+5. **Dépôt GitHub** : sur github.com, cliquez sur **« + »** en haut à droite > **New repository**, nommez-le `recherche-emploi-make-<prénom>`, choisissez **Public**, cochez **Add a README file**, puis **Create repository**. Cliquez ensuite sur **Add file > Upload files**, glissez votre document, le blueprint et les captures (pas de fichier .zip), puis **Commit changes**. Vérifiez une dernière fois qu'aucun secret n'apparaît.
+6. Préparez une démo de 5 minutes.
 
 ## Zoom sur les modules HTTP
 
 Le module **HTTP > Make a request** est le plus délicat du projet : c'est lui qui « parle » directement à une API, sans assistant. Prenez le temps de lire cette partie avant de cliquer.
 
 **Le principe, en une image.** Une API est un guichet. Pour y passer, il faut d'abord montrer sa carte d'identité (identifiant client + clé secrète) pour obtenir un **ticket** valable un moment : le **jeton d'accès**. Ensuite, on présente ce ticket à chaque demande. D'où deux modules HTTP à la suite.
+
+La colonne « En Python » est donnée à titre de comparaison, pour plus tard : vous n'avez pas besoin de la comprendre pour réussir le projet.
 
 - **URL** — Ce que c'est : L'adresse du guichet — En Python : `url = "https://..."`
 - **Method** — Ce que c'est : Le type de demande : POST envoie des infos, GET en demande — En Python : `requests.post(...)` / `requests.get(...)`
@@ -213,6 +247,8 @@ Après le module Google Sheets, ajoutez un troisième **HTTP > Make a request** 
 - **Body content type** : `multipart/form-data`
 - **Field 1** : Name `content`, Field type `Text`, Value = votre message
 
+> ⚠️ Si Discord renvoie une erreur **429** (trop de messages d'un coup), réduisez temporairement `range` à `0-4` dans le module 2 pour vos tests.
+
 À vous de composer le message avec les pastilles de l'offre (intitulé, entreprise, lieu, contrat, lien). Astuce : dans Discord, un texte entouré de `**` s'affiche en gras.
 
 ![Module Discord : multipart/form-data et champ content](https://raw.githubusercontent.com/gsoulat/brief-recherche-emploi-make/main/images/12-module-discord.png)
@@ -258,10 +294,10 @@ Une compétence est validée quand **100 % de ses critères** sont atteints.
 
 - Le Sheet a une ligne d'en-têtes et une ligne par offre, sans décalage de colonnes.
 - Les colonnes de suivi (statut, date de candidature, notes) sont présentes et séparées des colonnes remplies par Make.
-- Une alerte Discord est envoyée pour chaque offre ajoutée.
 
 **Transverse**
 
+- Une alerte Discord est envoyée pour chaque offre ajoutée.
 - Dépôt GitHub complet : document de présentation, blueprint JSON et captures, déposés directement (sans .zip).
 - Aucune clé secrète, identifiant client ou URL de webhook visible dans le document, le blueprint ou les captures.
 
