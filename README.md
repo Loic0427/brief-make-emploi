@@ -28,7 +28,7 @@ Vous approchez de la fin de votre formation de Data Analyst. Prochaine étape : 
 
 Chaque semaine, c'est le même rituel : ouvrir les sites d'offres, taper « data analyst », repérer les nouveautés, noter quelque part celles qui vous intéressent… et oublier à qui vous avez déjà écrit. Vous perdez du temps sur la recherche au lieu de soigner vos candidatures.
 
-Votre formateur, Guillaume, vous lance un défi : **appliquer votre métier à votre propre recherche d'emploi**. Un data analyst sait aller chercher des données, les nettoyer et les ranger pour en tirer des décisions. Les offres d'emploi sont des données comme les autres.
+Le défi : **appliquer votre métier à votre propre recherche d'emploi**. Un data analyst sait aller chercher des données, les nettoyer et les ranger pour en tirer des décisions. Les offres d'emploi sont des données comme les autres.
 
 Bonne nouvelle : France Travail met ses offres d'emploi à disposition gratuitement, grâce à une **API** accessible depuis le site francetravail.io. Et votre promo utilise déjà **Make**, un outil d'automatisation no-code, ainsi que **Google Sheets** et **Discord**.
 
@@ -57,7 +57,7 @@ Avant le projet, vous apprenez Make en construisant une **veille data automatiqu
 
 (~4 800/6 000 car.)
 
-Travail **individuel**, sur une journée : la phase 0 le matin (2 h), puis le projet en 8 étapes. Chaque étape se termine par un point de contrôle : ne passez pas à la suivante tant qu'il n'est pas atteint. Bloqué plus de 10 minutes ? Demandez à un voisin, puis au formateur. Sauvegardez votre scénario souvent (`Ctrl+S` / `Cmd+S`).
+Travail **individuel**, sur une journée : la phase 0 le matin (2 h), puis le projet en 8 étapes. Chaque étape se termine par un point de contrôle : ne passez pas à la suivante tant qu'il n'est pas atteint. Bloqué plus de 10 minutes ? Demandez de l'aide à un voisin. Sauvegardez votre scénario souvent (`Ctrl+S` / `Cmd+S`).
 
 - **0. Apprendre Make (tutos 1 et 2)** — Durée : 2 h — Point de contrôle : Veille RSS fonctionnelle
 - **1. Ouvrir l'accès à l'API France Travail** — Durée : 30 min — Point de contrôle : Application créée, API Offres d'emploi autorisée
