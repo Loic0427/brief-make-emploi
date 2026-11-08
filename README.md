@@ -38,7 +38,7 @@ Léa attend de vous un outil qui, chaque lundi matin, sans aucune action de votr
 - les range dans un tableau de suivi de candidatures, avec des colonnes que vous compléterez vous-même (statut, date de candidature, notes) ;
 - vous envoie une alerte par offre dans un salon Discord privé, avec le lien pour postuler.
 
-Contraintes : pas de budget (offre gratuite de Make), aucun mot de passe ni clé secrète visible dans vos livrables, et un outil qu'une personne qui ne l'a pas construit peut comprendre en lisant votre README.
+Contraintes : pas de budget (offre gratuite de Make), aucun mot de passe ni clé secrète visible dans vos livrables, et un outil qu'une personne qui ne l'a pas construit peut comprendre en lisant votre document de présentation.
 
 À la fin de la journée, vous présenterez votre automatisation en 5 minutes, avec un vrai tableau rempli d'offres réelles.
 
@@ -67,7 +67,7 @@ Travail **individuel**, sur une journée : la phase 0 le matin (2 h), puis le pr
 - **5. Iterator + Google Sheets** — Durée : 30 min — Point de contrôle : Une ligne par offre dans le Sheet
 - **6. Alerte Discord** — Durée : 30 min — Point de contrôle : Une alerte par offre dans le salon
 - **7. Tester, planifier, compter** — Durée : 20 min — Point de contrôle : Scénario planifié, crédits estimés
-- **8. Documenter et préparer la démo** — Durée : 40 min — Point de contrôle : README et captures floutées
+- **8. Documenter et préparer la démo** — Durée : 40 min — Point de contrôle : dépôt GitHub prêt (document, blueprint, captures)
 
 **Étape 1 — Ouvrir l'accès à l'API France Travail**
 
@@ -113,7 +113,7 @@ Questions guidantes : pourquoi une exécution par semaine avec « offres des 7 d
 
 **Étape 8 — Documenter et préparer la démo**
 
-Rédigez le README, ajoutez des captures en **floutant** clé secrète, identifiant client, URL du webhook et données personnelles, puis préparez une démo de 5 minutes.
+Rédigez le document de présentation (Word ou texte), exportez le blueprint en masquant les secrets, ajoutez les captures en **floutant** clé secrète, identifiant client, URL du webhook et données personnelles, puis déposez le tout directement dans votre dépôt GitHub (sans fichier .zip). Préparez enfin une démo de 5 minutes.
 
 ## Zoom sur les modules HTTP
 
@@ -219,15 +219,13 @@ Après le module Google Sheets, ajoutez un troisième **HTTP > Make a request** 
 
 ## Livrables attendus
 
-(~1 100/3 000 car.)
+(~1 200/3 000 car.)
 
-Un **repo GitHub public** `recherche-emploi-make` contenant :
+Un **dépôt GitHub public** nommé `recherche-emploi-make-<prénom>`, dans lequel les fichiers sont déposés directement (pas de fichier .zip). Il contient :
 
-- `README.md` : description du projet, outils utilisés (Make, API France Travail, Google Sheets, Discord), schéma du scénario (module par module, avec le rôle de chacun), critères de recherche choisis (mots-clés, département(s)), estimation des crédits Make consommés par mois, instructions pour reproduire le projet, auteur ;
-- `blueprint.json` : l'export du scénario Make (menu « … » du scénario > Export Blueprint), **après avoir vérifié qu'il ne contient ni clé secrète ni URL de webhook** ;
-- un dossier `captures/` : le scénario complet, le Sheet rempli, le salon Discord avec les alertes, la planification, toutes **floutées** (clés, webhook, données personnelles).
-
-Le lien du Google Sheet en lecture seule, à coller dans le README.
+- un **document Word (.docx) ou texte (.txt)** qui présente le projet : objectif, outils utilisés (Make, API France Travail, Google Sheets, Discord), rôle de chaque module du scénario, critères de recherche choisis (mots-clés, département(s)), estimation des crédits Make consommés par mois, difficultés rencontrées et solutions trouvées, lien du Google Sheet en lecture seule ;
+- le **blueprint JSON** du scénario (menu « … » en haut à droite du scénario > Export Blueprint). Attention : ce fichier contient vos valeurs en clair. Ouvrez-le avec un éditeur de texte et remplacez l'identifiant client, la clé secrète et l'URL du webhook par `***` avant de le déposer ;
+- les **captures d'écran** : le scénario complet, le Sheet rempli, le salon Discord avec les alertes et la planification, toutes **floutées** (clés, webhook, données personnelles).
 
 ## Modalités d'évaluation
 
@@ -235,8 +233,6 @@ Le lien du Google Sheet en lecture seule, à coller dans le README.
 
 - **Démo individuelle de 5 minutes** en fin de journée : lancement du scénario en direct (Run once), puis visite du Sheet et du salon Discord.
 - **3 minutes de questions** : rôle de chaque module, ce qu'est un jeton d'accès, ce qui se passerait sans `ifempty`, comment ajouter un département.
-- **Revue du repo** par la formatrice avec la checklist de notation.
-- Le corrigé (tuto 3) est remis **après** la démo, pour comparer sa solution.
 
 Une compétence est validée quand **100 % de ses critères** sont atteints.
 
@@ -266,8 +262,8 @@ Une compétence est validée quand **100 % de ses critères** sont atteints.
 
 **Transverse**
 
-- Repo GitHub public avec README complet et blueprint.
-- Aucune clé secrète, identifiant client ou URL de webhook visible dans le repo ou les captures.
+- Dépôt GitHub complet : document de présentation, blueprint JSON et captures, déposés directement (sans .zip).
+- Aucune clé secrète, identifiant client ou URL de webhook visible dans le document, le blueprint ou les captures.
 
 ## Ressources
 
@@ -276,4 +272,3 @@ Une compétence est validée quand **100 % de ses critères** sont atteints.
 - [francetravail.io](https://francetravail.io) : création du compte, de l'application et documentation de l'API Offres d'emploi
 - [Make — documentation de l'app HTTP](https://apps.make.com/http)
 - [Discord — Intro to Webhooks](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks)
-- Corrigé : *Tuto 3 — Recherche de stage, d'alternance ou d'emploi en data avec Make*, remis après la démo.
