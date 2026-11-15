@@ -1,0 +1,194 @@
+================================================================================
+AUTOMATISATION DE LA RECHERCHE D'EMPLOI DATA ANALYST AVEC MAKE & L'API JSEARCH
+================================================================================
+
+Auteur : Loïc
+Formation : Data Analyst (Simplon)
+Projet : Automatisation d'une veille d'offres d'emploi no-code
+Lien Google Sheet (Lecture seule) : 
+https://docs.google.com/spreadsheets/d/1fN_T5-ckxZtmThjbgxEAyIvLhVMCMxNGJciKwQqqbn0/edit?usp=sharing
+Dépôt GitHub public : recherche-emploi-make-loic
+
+
+--------------------------------------------------------------------------------
+1. OBJECTIF DU PROJET ET CONTEXTE METIER
+--------------------------------------------------------------------------------
+Dans le cadre de la formation Data Analyst, la recherche d'un stage ou d'une 
+alternance est une étape déterminante. La recherche d'emploi manuelle est 
+chronophage, répétitive et dispersée (LinkedIn, Indeed, France Travail, Apec...).
+
+L'objectif de ce projet est d'appliquer nos compétences en gestion et 
+manipulation de la donnée (collecte, nettoyage, structuration, diffusion) à 
+notre propre insertion professionnelle. 
+
+Le système développé :
+- Interroge chaque semaine l'API JSearch pour capter les nouvelles offres de 
+  "Data Analyst" sur Lille et sa région ;
+- Nettoie et prépare les données reçues (formatage des dates, gestion des 
+  valeurs manquantes) ;
+- Alimente un Google Sheet structuré avec des colonnes de gestion manuelle 
+  réservées au candidat ;
+- Déclenche une alerte instantanée sur un salon Discord dédié avec le lien 
+  direct vers l'offre ;
+- Fonctionne de manière 100 % gratuite et sécurisée (0 € de budget, aucun 
+  secret exposé publiquement).
+
+
+--------------------------------------------------------------------------------
+2. OUTILS ET TECHNOLOGIES UTILISES
+--------------------------------------------------------------------------------
+- Make (make.com) : Plateforme d'intégration no-code servant d'orchestrateur 
+  central pour connecter l'API, le tableur et la messagerie, boucler sur les 
+  données et planifier le scénario.
+- API JSearch (OpenWeb Ninja) : Service fournissant l'accès aux offres 
+  recensées par Google pour l'emploi (Indeed, LinkedIn, Welcome to the Jungle, 
+  Apec...). L'offre gratuite propose 200 requêtes par mois sans carte bancaire.
+- Google Sheets : Espace de stockage tabulaire structuré permettant de séparer 
+  les données brutes collectées et les colonnes de suivi de candidatures 
+  (statut, date de candidature, notes).
+- Discord (Webhooks) : Outil de communication pour recevoir des alertes push 
+  immédiates sur mobile ou ordinateur.
+
+
+--------------------------------------------------------------------------------
+3. ROLE DE CHAQUE MODULE DU SCENARIO MAKE
+--------------------------------------------------------------------------------
+Le scénario "Offre_emploi_data" comporte 4 modules principaux :
+
+1. Module HTTP - Make a request (ID: 1)
+   - Rôle : Effectue une requête HTTP GET vers l'API JSearch afin d'extraire les 
+     offres de la semaine.
+   - Paramètres :
+     * URL : https://api.openwebninja.com/jsearch/search-v2
+     * Méthode : GET
+     * Headers : x-api-key: *** (authentification sécurisée)
+     * Query Parameters : query="data analyst lille", country="fr", 
+       language="fr", date_posted="week", num_pages="1"
+     * Parse response : Yes (convertit le JSON brut en pastilles de variables).
+
+2. Module Flow Control - Iterator / BasicFeeder (ID: 2)
+   - Rôle : Reçoit le tableau global jobs[] renvoyé par l'API et le découpe 
+     en bundles unitaires pour traiter chaque offre l'une après l'autre.
+   - Entrée : 1.data.data.jobs
+
+3. Module Google Sheets - Add a Row (ID: 4)
+   - Rôle : Insère une nouvelle ligne dans la feuille "Feuille 1" du classeur 
+     "Suivi candidatures Data Analyst".
+   - Colonnes renseignées par Make :
+     * Col A (date de publication) : formatDate(job_posted_at_datetime_utc; "DD/MM/YYYY")
+     * Col B (Intitulé) : job_title
+     * Col C (Entreprise) : ifempty(employer_name; "Non communiqué")
+     * Col D (Lieu) : ifempty(job_location; "Non communiqué")
+     * Col E (Type de contrat) : job_employment_type
+     * Col F (site d'origine) : job_google_link
+     * Col G (Lien) : job_apply_link
+   - Colonnes laissées vides (remplies par le candidat) :
+     * Col H : statut
+     * Col I : date de candidature
+     * Col J : Retour / Notes
+
+4. Module HTTP - Make a request / Discord Webhook (ID: 6)
+   - Rôle : Transmet un message de notification dans le salon Discord #offres-data.
+   - Paramètres :
+     * Méthode : POST
+     * URL : *** (URL du Webhook Discord)
+     * Body type : multipart/form-data
+     * Champ "content" : message contenant la date, l'intitulé du poste, 
+       la localisation et le lien direct pour postuler.
+
+
+--------------------------------------------------------------------------------
+4. CRITERES DE RECHERCHE CHOISIS ET JUSTIFICATION
+--------------------------------------------------------------------------------
+- query = "data analyst lille" : cible le métier visé et le bassin d'emploi 
+  régional (Lille Métropole).
+- country = "fr" : garantit des résultats situés en France.
+- language = "fr" : sélectionne les offres rédigées en langue française.
+- date_posted = "week" : limite la collecte aux offres publiées au cours des 7 
+  derniers jours, en adéquation avec la fréquence hebdomadaire du scénario.
+- num_pages = "1" : récupère la première page de résultats (environ 10 offres), 
+  ce qui optimise la consommation des opérations Make et évite les volumes 
+  inutiles.
+
+
+--------------------------------------------------------------------------------
+5. NETTOYAGE ET PREPARATION DES DONNEES (COMPETENCE C7)
+--------------------------------------------------------------------------------
+- Formatage des dates : conversion de la chaîne UTC brute vers le format français 
+  JJ/MM/AAAA via formatDate(job_posted_at_datetime_utc; "DD/MM/YYYY") et typage 
+  de la colonne du Sheet en "Texte brut" pour interdire les inversions jour/mois.
+- Gestion des valeurs absentes : utilisation de ifempty(champ; "Non communiqué") 
+  pour l'entreprise et la ville afin d'éviter toute cellule vide ou valeur null.
+- Type de contrat & liens vérifiés : intégration du type de contrat 
+  (job_employment_type), du lien Google d'origine et du lien direct de 
+  candidature (job_apply_link).
+
+
+--------------------------------------------------------------------------------
+6. STRUCTURE DU SHEET DE SUIVI (COMPETENCE C8)
+--------------------------------------------------------------------------------
+Le tableau présente une séparation stricte :
+- Colonnes Make (à gauche, A à G) : Date, Intitulé, Entreprise, Lieu, Type de 
+  contrat, Site source, Lien.
+- Colonnes Candidat (à droite, H à J) : Statut (À postuler, Postulé, En attente, 
+  Entretien), Date de candidature, Notes. Ces colonnes ne sont jamais écrasées 
+  par Make.
+
+
+--------------------------------------------------------------------------------
+7. ESTIMATION DE LA CONSOMMATION DES QUOTAS
+--------------------------------------------------------------------------------
+Pour une exécution type traitant 10 offres :
+- Make : 1 crédit HTTP + 1 crédit Iterator + 10 crédits Sheet + 10 crédits Discord = 22 crédits.
+- JSearch : 1 requête API.
+
+Sur 1 mois (planification chaque lundi à 08h00 = 4 exécutions) :
+- Crédits Make : 4 x 22 = 88 crédits / mois (sur 1 000 gratuits disponibles, 
+  soit moins de 9 % d'utilisation).
+- Requêtes JSearch : 4 requêtes / mois (sur 200 gratuites disponibles, 
+  soit 2 % d'utilisation).
+Conclusion : Le projet dispose d'une marge confortable pour ajouter d'autres 
+mots-clés ou d'autres villes sans aucun surcoût.
+
+
+--------------------------------------------------------------------------------
+8. DIFFICULTES RENCONTREES ET SOLUTIONS APPORTEES
+--------------------------------------------------------------------------------
+1. Sécurité des secrets : pour ne pas laisser fuiter la clé JSearch et l'URL du 
+   webhook, la clé est transmise par header HTTP (x-api-key) et les valeurs ont 
+   été remplacées par *** dans l'export du blueprint JSON.
+2. Structure JSON complexe : les données utiles se situaient dans data.data.jobs. 
+   Un test unitaire initial (Run this module only) a été nécessaire pour que 
+   Make référence correctement les pastilles.
+3. Affichage des dates : Google Sheets interprétait parfois les dates au format 
+   américain (MM/JJ/AAAA). Le passage en "Texte brut" a définitivement résolu le 
+   problème.
+4. Risque d'erreur 429 sur Discord : l'envoi rapide de 10 requêtes successives 
+   peut saturer le webhook. La solution préventive consiste à ajouter un module 
+   Sleep (1 seconde) si un ralentissement est constaté.
+
+
+--------------------------------------------------------------------------------
+9. PREPARATION DE LA SOUTENANCE (DEMO & REPONSES AUX QUESTIONS)
+--------------------------------------------------------------------------------
+Déroulement de la démo (5 min) :
+- Min 1 : Explication de la problématique et vue d'ensemble du scénario Make.
+- Min 2 : Lancement en direct via "Run once" et observation des compteurs.
+- Min 3 : Visite du Google Sheet avec les nouvelles lignes générées.
+- Min 4 : Visite du salon Discord #offres-data avec les alertes reçues.
+- Min 5 : Présentation de la planification (Weekly, Monday 08:00) et conclusion.
+
+Questions types du jury :
+- Q : Pourquoi passer la clé d'API dans un header et pas dans l'URL ?
+  R : Pour des raisons de sécurité : les URLs sont enregistrées en clair dans 
+  les fichiers de logs, les serveurs proxy et l'historique de navigation.
+- Q : Pourquoi garder l'URL du webhook secrète ?
+  R : Car elle donne un accès direct d'écriture sur le salon Discord sans autre 
+  mot de passe.
+- Q : À quoi sert ifempty ?
+  R : À attribuer une valeur par défaut propre ("Non communiqué") lorsque l'API 
+  ne fournit pas l'information, évitant les cellules vides ou corrompues.
+- Q : Comment chercher dans une autre ville ou un autre contrat ?
+  R : En modifiant simplement la valeur du paramètre "query" dans le module 1.
+================================================================================
+

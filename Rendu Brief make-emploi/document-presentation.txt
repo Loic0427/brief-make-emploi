@@ -1,0 +1,126 @@
+================================================================================
+AUTOMATISATION DE LA RECHERCHE D'EMPLOI DATA ANALYST AVEC MAKE & L'API JSEARCH
+
+
+1. OUTILS ET TECHNOLOGIES UTILISES
+--------------------------------------------------------------------------------
+- Make, Plateforme d'intégration no-code servant d'orchestrateur 
+  central pour connecter l'API, le tableur et la messagerie, boucler sur les 
+  données et planifier le scénario.
+- API JSearch (OpenWeb Ninja) : Service fournissant l'accès aux offres 
+  recensées par Google pour l'emploi.
+- Google Sheets : Espace de stockage tabulaire structuré permettant de séparer 
+  les données brutes collectées et les colonnes de suivi de candidatures.
+- Discord (Webhooks) : Outil de communication pour recevoir des alertes push 
+  immédiates.
+
+
+
+2. ROLE DE CHAQUE MODULE DU SCENARIO MAKE
+--------------------------------------------------------------------------------
+Le scénario "Offre_emploi_data" comporte 4 modules principaux :
+
+1. Module HTTP
+   - Rôle : Effectue une requête HTTP GET vers l'API JSearch afin d'extraire les 
+     offres de la semaine.
+   - Paramètres :
+     * URL : https://api.openwebninja.com/jsearch/search-v2
+     * Méthode : GET
+     * Headers : x-api-key: *** (authentification sécurisée)
+     * Query Parameters : query="data analyst lille", country="fr", 
+       language="fr", date_posted="week", num_pages="1"
+     * Parse response : Yes (convertit le JSON brut en pastilles de variables).
+
+2. Module Flow Control - Iterator / BasicFeeder
+   - Rôle : Reçoit le tableau global jobs[] renvoyé par l'API et le découpe 
+     en bundles unitaires pour traiter chaque offre l'une après l'autre.
+   - Entrée : 1.data.data.jobs
+
+3. Module Google Sheets - Add a Row
+   - Rôle : Insère une nouvelle ligne dans la feuille "Feuille 1" du classeur 
+     "Suivi candidatures Data Analyst".
+   - Colonnes renseignées par Make :
+     * Col A (date de publication) : formatDate(job_posted_at_datetime_utc; "DD/MM/YYYY")
+     * Col B (Intitulé) : job_title
+     * Col C (Entreprise) : ifempty(employer_name; "Non communiqué")
+     * Col D (Lieu) : ifempty(job_location; "Non communiqué")
+     * Col E (Type de contrat) : job_employment_type
+     * Col F (site d'origine) : job_google_link
+     * Col G (Lien) : job_apply_link
+   - Colonnes laissées vides (remplies par le candidat) :
+     * Col H : statut (Reçu, lu, pas retenue, candidaté)
+     * Col I : Date de candidature
+     * Col J : Retour (Positif, négatif, En attente)
+     * Col K : Notes
+
+
+
+4. Module HTTP - Make a request / Discord Webhook
+   - Rôle : Transmet un message de notification dans le salon Discord #offres-data.
+   - Paramètres :
+     * Méthode : POST
+     * URL : *** (URL du Webhook Discord)
+     * Body type : multipart/form-data
+     * Champ "content" : message contenant la date, l'intitulé du poste, 
+       la localisation et le lien direct pour postuler.
+
+
+
+3. CRITERES DE RECHERCHE CHOISIS ET JUSTIFICATION
+--------------------------------------------------------------------------------
+- query = "data analyst lille" : cible le métier visé et le bassin d'emploi 
+  régional (Lille Métropole).
+- country = "fr" : garantit des résultats situés en France.
+- language = "fr" : sélectionne les offres rédigées en langue française.
+- date_posted = "week" : limite la collecte aux offres publiées au cours des 7 
+  derniers jours, en adéquation avec la fréquence hebdomadaire du scénario.
+- num_pages = "1" : récupère la première page de résultats (environ 10 offres), 
+  ce qui optimise la consommation des opérations Make et évite les volumes 
+  inutiles.
+
+
+4. NETTOYAGE ET PREPARATION DES DONNEES
+--------------------------------------------------------------------------------
+- Formatage des dates : conversion de la chaîne UTC brute vers le format français 
+  JJ/MM/AAAA via formatDate(job_posted_at_datetime_utc; "DD/MM/YYYY") et typage 
+  de la colonne du Sheet en "Texte brut" pour interdire les inversions jour/mois.
+- Gestion des valeurs absentes : utilisation de ifempty(champ; "Non communiqué") 
+  pour l'entreprise et la ville afin d'éviter toute cellule vide ou valeur null.
+- Type de contrat & liens vérifiés : intégration du type de contrat 
+  (job_employment_type), du lien Google d'origine et du lien direct de 
+  candidature (job_apply_link).
+
+
+5. ESTIMATION DE LA CONSOMMATION DES QUOTAS
+--------------------------------------------------------------------------------
+Pour une exécution type traitant 10 offres :
+- Make : 1 crédit HTTP + 1 crédit Iterator + 10 crédits Sheet + 10 crédits Discord = 22 crédits.
+- JSearch : 1 requête API.
+
+Sur 1 mois (planification chaque lundi à 08h00 = 4 exécutions) :
+- Crédits Make : 4 x 22 = 88 crédits / mois (sur 1 000 gratuits disponibles, 
+  soit moins de 9 % d'utilisation).
+- Requêtes JSearch : 4 requêtes / mois (sur 200 gratuites disponibles, 
+  soit 2 % d'utilisation).
+Conclusion : Le projet dispose d'une marge confortable pour ajouter d'autres 
+mots-clés ou d'autres villes sans aucun surcoût.
+
+
+
+6. DIFFICULTES RENCONTREES ET SOLUTIONS APPORTEES
+--------------------------------------------------------------------------------
+1. Sécurité des secrets : pour ne pas laisser fuiter la clé JSearch et l'URL du 
+   webhook, la clé est transmise par header HTTP (x-api-key) et les valeurs ont 
+   été remplacées par *** dans l'export du blueprint JSON.
+2. Structure JSON complexe : les données utiles se situaient dans data.data.jobs. 
+   Un test unitaire initial (Run this module only) a été nécessaire pour que 
+   Make référence correctement les pastilles.
+3. Affichage des dates : Google Sheets interprétait parfois les dates au format 
+   américain (MM/JJ/AAAA). Le passage en "Texte brut" a définitivement résolu le 
+   problème.
+4. Risque d'erreur 429 sur Discord : l'envoi rapide de 10 requêtes successives 
+   peut saturer le webhook. La solution préventive consiste à ajouter un module 
+   Sleep (1 seconde) si un ralentissement est constaté.
+5. Gestion des doublon, avec création d'un script google sheet.
+
+
